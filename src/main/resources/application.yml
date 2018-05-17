@@ -1,0 +1,9 @@
+kvdb:
+  num-of-nodes: 2
+  max-db-file-size: 10
+  node-type: master
+  node-id: 0
+  master-node-port: 6600
+  host-name: localhost
+server:
+  port: 6600
