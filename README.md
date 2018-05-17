@@ -1,2 +1,2 @@
 # kvdb
-Simple Distribute In-Memory Key Value Database
+Simple Distributed In-Memory Key Value Database
