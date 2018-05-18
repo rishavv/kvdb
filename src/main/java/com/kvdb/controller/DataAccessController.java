@@ -14,6 +14,7 @@ import com.kvdb.RestClientService;
 import com.kvdb.config.SysConfig;
 import com.kvdb.model.KVStorage;
 import com.kvdb.utils.HashUtils;
+import com.kvdb.utils.RestUtils;
 
 @RestController
 public class DataAccessController {
@@ -30,13 +31,13 @@ public class DataAccessController {
 	@Autowired
 	RestClientService restClientService;
 
-	@RequestMapping(value = "{key}", method = RequestMethod.POST)
+	@RequestMapping(value = RestUtils.SET+"/{key}", method = RequestMethod.POST)
 	@ResponseBody
 	public String put(@PathVariable("key") String key, @RequestBody String value,
 			HttpServletResponse response) {
 		try {
 			int nodeIndex = hashUtils.getNodeIndex(key);
-			if(sysConfig.getNodeId() == nodeIndex){
+			if(sysConfig.getNodeIdx() == nodeIndex){
 				kvStorage.put(key, value);
 			}
 			else {
@@ -55,13 +56,13 @@ public class DataAccessController {
 
 	}
 
-	@RequestMapping(value = "{key}", method = RequestMethod.GET)
+	@RequestMapping(value = RestUtils.GET+"/{key}", method = RequestMethod.GET)
 	@ResponseBody
 	public String patientOptOut(@PathVariable("key") String key, HttpServletResponse response) {
 		String result = null;
 		try{
 			int nodeIndex = hashUtils.getNodeIndex(key);
-			if(sysConfig.getNodeId() == nodeIndex){
+			if(sysConfig.getNodeIdx() == nodeIndex){
 				result = kvStorage.get(key);
 			}
 			else {

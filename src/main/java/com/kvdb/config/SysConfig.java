@@ -2,22 +2,22 @@ package com.kvdb.config;
 
 import java.util.Map;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-@ConfigurationProperties(prefix="kvdb")
-@Component
 public class SysConfig {
 
 	private Integer numOfNodes;
 
-	private String nodeType;
-	
-	private Integer nodeId;
+	private Integer nodeIdx;
 
 	private Integer masterNodePort;
 	
 	private String hostName;
+	
+	public SysConfig(Integer numOfNodes, Integer nodeIdx, Integer masterNodePort, String hostName){
+		this.numOfNodes = numOfNodes;
+		this.nodeIdx = nodeIdx;
+		this.masterNodePort = masterNodePort;
+		this.hostName= hostName;
+	}
 	
 	private Map<Integer,Integer> nodePortMap;
 	
@@ -29,20 +29,12 @@ public class SysConfig {
 		this.numOfNodes = numOfNodes;
 	}
 
-	public String getNodeType() {
-		return nodeType;
+	public Integer getNodeIdx() {
+		return nodeIdx;
 	}
 
-	public void setNodeType(String nodeType) {
-		this.nodeType = nodeType;
-	}
-
-	public Integer getNodeId() {
-		return nodeId;
-	}
-
-	public void setNodeId(Integer nodeId) {
-		this.nodeId = nodeId;
+	public void setNodeIdx(Integer nodeIdx) {
+		this.nodeIdx = nodeIdx;
 	}
 
 	public Map<Integer, Integer> getNodePortMap() {

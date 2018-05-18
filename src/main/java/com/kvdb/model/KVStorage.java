@@ -2,6 +2,7 @@ package com.kvdb.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ public class KVStorage<K,V> {
 	private Map<K,V> storageMap;
 	
 	public KVStorage(){
-		this.storageMap = new HashMap<K,V>();
+		this.storageMap = new ConcurrentHashMap<K,V>();
 	}
 	
 	public KVStorage(int initCapacity){
