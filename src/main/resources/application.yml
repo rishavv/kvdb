@@ -1,7 +1,7 @@
 kvdb:
-  num-of-nodes: 300
-  node-idx: 0
-  master-node-port: 6600
-  host-name: localhost
+  num-of-nodes: 2 # number of processes/nodes. max allowed 255
+  node-idx: 0 # index of current node. should start at 0
+  master-node-port: 6600 # port number of node at index 0
+  host-name: localhost 
 server:
-  port: 6600
+  port: 6600 # port number of current node. strict serial relation with node index.
