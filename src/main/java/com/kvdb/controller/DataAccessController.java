@@ -2,6 +2,8 @@ package com.kvdb.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kvdb.RestClientService;
 import com.kvdb.config.SysConfig;
 import com.kvdb.model.KVStorage;
+import com.kvdb.service.RestClientService;
 import com.kvdb.utils.HashUtils;
 import com.kvdb.utils.RestUtils;
 
@@ -30,13 +32,17 @@ public class DataAccessController {
 	
 	@Autowired
 	RestClientService restClientService;
+	
+	private Logger log = LoggerFactory.getLogger(DataAccessController.class.getName());
 
 	@RequestMapping(value = RestUtils.SET+"/{key}", method = RequestMethod.POST)
 	@ResponseBody
 	public String put(@PathVariable("key") String key, @RequestBody String value,
 			HttpServletResponse response) {
+		log.debug("SET KEY " +key);
 		try {
 			int nodeIndex = hashUtils.getNodeIndex(key);
+			log.debug("SETTING KEY ON NODE " +nodeIndex);
 			if(sysConfig.getNodeIdx() == nodeIndex){
 				kvStorage.put(key, value);
 			}
@@ -59,9 +65,11 @@ public class DataAccessController {
 	@RequestMapping(value = RestUtils.GET+"/{key}", method = RequestMethod.GET)
 	@ResponseBody
 	public String patientOptOut(@PathVariable("key") String key, HttpServletResponse response) {
+		log.debug("GET KEY " +key);
 		String result = null;
 		try{
 			int nodeIndex = hashUtils.getNodeIndex(key);
+			log.debug("GETTING KEY ON NODE " +nodeIndex);
 			if(sysConfig.getNodeIdx() == nodeIndex){
 				result = kvStorage.get(key);
 			}

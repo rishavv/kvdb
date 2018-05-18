@@ -5,3 +5,11 @@ kvdb:
   host-name: localhost
 server:
   port: 6600
+
+kvdb:
+  num-of-nodes: ${KVDB_NUM_OF_NODES}
+  node-idx: ${KVDB_NODE_IDX}
+  master-node-port: ${KVDB_MASTER_NODE_PORT}
+  host-name: ${KVDB_HOST_NAME}
+server:
+  port: ${APP_SERVER_PORT}

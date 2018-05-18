@@ -16,7 +16,7 @@ import com.kvdb.utils.HashUtils;
 public class AppConfig {
 
 	@Autowired
-	Environment env;
+	private Environment env;
 	
 	@Bean
 	public SysConfig sysConfig() {
