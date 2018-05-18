@@ -41,7 +41,7 @@ Port Number of the current Node
 server:
   port: 6600
   ```
-### Example Config of first node in a 2 node setup
+### Example Config of each node in a 2 node setup
 
 Node 1
 ```
