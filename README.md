@@ -11,6 +11,16 @@ Simple Distributed In-Memory Key Value Database
 
 ## Build
 
+### System Requirements
+
+```
+JDK 8 or above
+```
+
+```
+maven 3 or above
+```
+
 ### Use the following command to build and run a node
 
 ```
