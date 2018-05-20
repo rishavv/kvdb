@@ -3,6 +3,7 @@ package com.kvdb.utils;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.TimeUnit;
 
 public class RestUtils {
 
@@ -15,6 +16,8 @@ public class RestUtils {
 	public static final String SYSTEM_USER_NAME = "nstephenson";
 	
 	public static final String SYSTEM_USER_PASSWORD = "cryptonomicon";
+	
+	public static final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(10); // request time out
 	
 	public static URI getCompleteURI(String host, int port, String path, String key) throws MalformedURLException, URISyntaxException{
 		StringBuilder pathBuilder = new StringBuilder("/");

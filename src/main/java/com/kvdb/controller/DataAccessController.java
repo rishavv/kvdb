@@ -42,24 +42,34 @@ public class DataAccessController {
 			HttpServletResponse response) {
 		log.debug("SET KEY " +key);
 		String result = "SUCCESS";
-		try {
 			int nodeIndex = hashUtils.getNodeIndex(key);
 			log.debug("SETTING KEY ON NODE " +nodeIndex);
 			if(sysConfig.getNodeIdx() == nodeIndex){
 				kvStorage.put(key, value);
+				// async post to replica
+				postToReplica(nodeIndex, key, value);
 			}
 			else {
 				int port = sysConfig.getNodePortMap().get(nodeIndex);
-				result = restClientService.postValue(sysConfig.getHostName(), port, key, value);
+				try {
+					// post to primary node
+					result = restClientService.postValue(sysConfig.getHostName(), port, key, value);
+					// async post to replica
+					postToReplica(nodeIndex, key, value);
+				}
+				catch (Exception e){
+					log.error("Primary Node Post Error, node idx "+nodeIndex);
+					int replicaPort = sysConfig.getNodePortMap().get(RestUtils.getReplicaNodeIdx(nodeIndex, sysConfig.getNumOfNodes()));
+					try {
+						result = restClientService.postValue(sysConfig.getHostName(), replicaPort, key, value);
+					}
+					catch (Exception re){
+						result = "FAILURE";
+						log.error("Replica Node Post Error, node idx "+RestUtils.getReplicaNodeIdx(nodeIndex, sysConfig.getNumOfNodes()));
+					}
+				}
+				
 			}
-			postToReplica(nodeIndex, key, value);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return "FAILURE";
-		}
-		
 		return result;
 
 	}
@@ -69,25 +79,31 @@ public class DataAccessController {
 	public String get(@PathVariable("key") String key, HttpServletResponse response) {
 		log.debug("GET KEY " +key);
 		String result = null;
-		try{
-			int nodeIndex = hashUtils.getNodeIndex(key);
-			log.debug("GETTING KEY ON NODE " +nodeIndex);
-			if(sysConfig.getNodeIdx() == nodeIndex){
-				result = kvStorage.get(key);
-			}
-			else {
-				int port = sysConfig.getNodePortMap().get(nodeIndex);
+		int nodeIndex = hashUtils.getNodeIndex(key);
+		log.debug("GETTING KEY ON NODE " +nodeIndex);
+		if(sysConfig.getNodeIdx() == nodeIndex){
+			result = kvStorage.get(key);
+		}
+		else {
+			int port = sysConfig.getNodePortMap().get(nodeIndex);
+			try {
+				// get from primary node
 				result = restClientService.getResponse(sysConfig.getHostName(), port, key);
 			}
-			if(null == result){
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			catch (Exception e){
+				log.error("Unable to fetch from primary node index "+nodeIndex);
+				int replicaPort = sysConfig.getNodePortMap().get(RestUtils.getReplicaNodeIdx(nodeIndex, sysConfig.getNumOfNodes()));
+				try {
+					result = restClientService.getResponse(sysConfig.getHostName(), replicaPort, key);
+				}
+				catch (Exception re){
+					log.error("Unable to fetch from replica node index "+RestUtils.getReplicaNodeIdx(nodeIndex, sysConfig.getNumOfNodes()));
+				}
 			}
 		}
-		catch(Exception e){
-			e.printStackTrace();
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		if(null == result){
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
-		
 		return result;
 
 	}

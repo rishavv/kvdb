@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +30,7 @@ public class RestClientService {
 	
 	private Logger log = LoggerFactory.getLogger(RestClientService.class.getName());
 	
-	public String getResponse(String host, int port, String key) throws RestClientException, URISyntaxException, MalformedURLException{
+	public String getResponse(String host, int port, String key) throws RestClientException, URISyntaxException, MalformedURLException, ResourceAccessException{
 		URI completeURI = RestUtils.getCompleteURI(host, port, RestUtils.GET, key);
         
 		log.debug("URL "+completeURI.toString());
@@ -40,7 +41,7 @@ public class RestClientService {
 		return result.getBody();
 	}
 	
-	public String postValue(String host, int port, String key, String value) throws MalformedURLException, RestClientException, URISyntaxException{
+	public String postValue(String host, int port, String key, String value) throws MalformedURLException, RestClientException, URISyntaxException, ResourceAccessException{
 		URI completeURI = RestUtils.getCompleteURI(host, port, RestUtils.SET, key);
 		log.debug("URL "+completeURI.toString());
         
@@ -53,7 +54,7 @@ public class RestClientService {
 
 	@Async
 	public void postValueToReplica(String host, int port, String key, String value){
-		URI completeURI;
+		URI completeURI = null;
 		try {
 			completeURI = RestUtils.getCompleteURI(host, port, RestUtils.SET_REPLICA, key);
 			log.debug("URL "+completeURI.toString());
@@ -68,6 +69,9 @@ public class RestClientService {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
+		} catch (ResourceAccessException e){
+			e.printStackTrace();
+			log.error("Replication FAILED - URI " +completeURI.toString());
 		}
 	}
 	
