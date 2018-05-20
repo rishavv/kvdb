@@ -74,8 +74,9 @@ server:
   port: 6601
   ```
 Node 2
-  ```
-  kvdb:
+
+```
+kvdb:
     num-of-nodes: 3
     node-idx: 2
     master-node-port: 6600
