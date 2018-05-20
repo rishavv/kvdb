@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,9 +38,10 @@ public class DataAccessController {
 
 	@RequestMapping(value = RestUtils.SET+"/{key}", method = RequestMethod.POST)
 	@ResponseBody
-	public String put(@PathVariable("key") String key, @RequestBody String value,
+	public String set(@PathVariable("key") String key, @RequestBody String value,
 			HttpServletResponse response) {
 		log.debug("SET KEY " +key);
+		String result = "SUCCESS";
 		try {
 			int nodeIndex = hashUtils.getNodeIndex(key);
 			log.debug("SETTING KEY ON NODE " +nodeIndex);
@@ -48,9 +50,9 @@ public class DataAccessController {
 			}
 			else {
 				int port = sysConfig.getNodePortMap().get(nodeIndex);
-				String result = restClientService.postValue(sysConfig.getHostName(), port, key, value);
-				return result;
+				result = restClientService.postValue(sysConfig.getHostName(), port, key, value);
 			}
+			postToReplica(nodeIndex, key, value);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -58,13 +60,13 @@ public class DataAccessController {
 			return "FAILURE";
 		}
 		
-		return "SUCCESS";
+		return result;
 
 	}
 
 	@RequestMapping(value = RestUtils.GET+"/{key}", method = RequestMethod.GET)
 	@ResponseBody
-	public String patientOptOut(@PathVariable("key") String key, HttpServletResponse response) {
+	public String get(@PathVariable("key") String key, HttpServletResponse response) {
 		log.debug("GET KEY " +key);
 		String result = null;
 		try{
@@ -90,4 +92,30 @@ public class DataAccessController {
 
 	}
 	
+	@RequestMapping(value = RestUtils.SET_REPLICA+"/{key}", method = RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("hasRole('SYSTEM_USER')")
+	public String setReplica(@PathVariable("key") String key, @RequestBody String value,
+			HttpServletResponse response) {
+		log.debug("SET REPLICA KEY " +key);
+		try{
+			kvStorage.put(key, value);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return "FAILURE";
+		}
+		return "SUCCESS";
+	}
+	
+	private void postToReplica(int primaryNodeIndex, String key, String value){
+		
+		if(!(sysConfig.getNumOfNodes() > 1)){
+			return;
+		}
+		// post to replica
+		int replicaPort = sysConfig.getNodePortMap().get(RestUtils.getReplicaNodeIdx(primaryNodeIndex, sysConfig.getNumOfNodes()));
+		restClientService.postValueToReplica(sysConfig.getHostName(), replicaPort, key, value);
+	}
 }
