@@ -27,4 +27,16 @@ public class RestUtilsTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void validate_replica_node_idx_calc1(){
+		int replicaNodeIdx = RestUtils.getReplicaNodeIdx(0, 3);
+		assertEquals(1,replicaNodeIdx);
+	}
+	
+	@Test
+	public void validate_replica_node_idx_calc2(){
+		int replicaNodeIdx = RestUtils.getReplicaNodeIdx(2, 3);
+		assertEquals(0,replicaNodeIdx);
+	}
 }

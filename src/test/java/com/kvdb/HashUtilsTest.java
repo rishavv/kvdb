@@ -2,8 +2,6 @@ package com.kvdb;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.UnsupportedEncodingException;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
@@ -22,25 +20,19 @@ public class HashUtilsTest {
 
 	@Autowired
 	HashUtils hashUtils;
-	
+
 	@Test
-	public void validate_MD5(){
-		try {
-			byte[] hashed = hashUtils.getMd5Hash("key");
-			String hexString = DatatypeConverter.printHexBinary(hashed);
-			assertEquals("3C6E0B8A9C15224A8228B9A98CA1531D",hexString);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+	public void validate_MD5() {
+		byte[] hashed = hashUtils.getMd5Hash("key");
+		String hexString = DatatypeConverter.printHexBinary(hashed);
+		assertEquals("3C6E0B8A9C15224A8228B9A98CA1531D", hexString);
+
+	}
+
+	@Test
+	public void validate_node_index_calc() {
+		int nodeIndex = hashUtils.getNodeIndex("key");
+		assertEquals(0, nodeIndex);
 	}
 	
-	@Test
-	public void validate_node_index_calc(){
-		try {
-			int nodeIndex = hashUtils.getNodeIndex("key");
-			assertEquals(0, nodeIndex);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
 }
