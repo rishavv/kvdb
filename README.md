@@ -17,7 +17,11 @@ Simple Distributed In-Memory Key Value Database
 
 ### Example Usage
 
-For running two instances/nodes, run the first node with node-idx: 0 and second node with node-idx:1 as separate processes
+For running two instances/nodes, run the first node with node-idx: 0 and second node with node-idx:1 as separate processes.
+
+Make sure the port number of the node and node index follow the relation
+
+``` ${server.port} = ${kvdb.master-node-port} + ${kvdb.node-idx} ```
 
 
 ## Config
@@ -77,15 +81,13 @@ Node 2
     master-node-port: 6600
     host-name: localhost
   server:
-    port: 6602
-    ```
-# API
+    port: 6602 ```
 
+# API
 ## Set a key value pair
 ``` curl -X POST http://localhost:6600/set/test1 -d test1value ```
 
 ## Get the value of a Key
-
 ``` curl -X GET http://localhost:6600/get/test1 ```
 
 # Future Features
