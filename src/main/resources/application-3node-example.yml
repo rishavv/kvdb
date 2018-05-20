@@ -1,0 +1,26 @@
+# Node 0
+kvdb:
+  num-of-nodes: 3
+  node-idx: 0
+  master-node-port: 6600
+  host-name: localhost
+server:
+  port: 6600
+
+# Node 1
+kvdb:
+  num-of-nodes: 3
+  node-idx: 1
+  master-node-port: 6600
+  host-name: localhost
+server:
+  port: 6601
+
+# Node 2
+kvdb:
+  num-of-nodes: 3
+  node-idx: 2
+  master-node-port: 6600
+  host-name: localhost
+server:
+  port: 6602

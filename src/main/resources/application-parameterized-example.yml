@@ -1,12 +1,4 @@
 kvdb:
-  num-of-nodes: 2
-  node-idx: 0
-  master-node-port: 6600
-  host-name: localhost
-server:
-  port: 6600
-
-kvdb:
   num-of-nodes: ${KVDB_NUM_OF_NODES}
   node-idx: ${KVDB_NODE_IDX}
   master-node-port: ${KVDB_MASTER_NODE_PORT}
