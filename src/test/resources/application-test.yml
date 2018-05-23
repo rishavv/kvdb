@@ -1,0 +1,7 @@
+kvdb:
+  num-of-nodes: 1
+  node-idx: 0
+  master-node-port: 6600
+  host-name: localhost
+server:
+  port: 6600

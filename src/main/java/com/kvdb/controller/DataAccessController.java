@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -110,7 +109,6 @@ public class DataAccessController {
 	
 	@RequestMapping(value = RestUtils.SET_REPLICA+"/{key}", method = RequestMethod.POST)
 	@ResponseBody
-	@PreAuthorize("hasRole('SYSTEM_USER')")
 	public String setReplica(@PathVariable("key") String key, @RequestBody String value,
 			HttpServletResponse response) {
 		log.debug("SET REPLICA KEY " +key);

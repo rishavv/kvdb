@@ -14,7 +14,7 @@ import com.kvdb.utils.RestUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application.yml")
+@TestPropertySource(locations = "classpath:application-test.yml")
 public class RestUtilsTest {
 	
 	@Test
